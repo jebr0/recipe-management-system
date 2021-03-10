@@ -8,21 +8,161 @@
     <link href="https://fonts.googleapis.com/css?family=Nunito+Sans:400,600,700" rel="stylesheet">
     <link rel="stylesheet" href="css/style.css">
     <link rel="shortcut icon" href="img/favicon.png" type="image/x-icon">
+    
     <title>recipeworld // Search over 1,000,000 recipes</title>
 </head>
 
 <body>
+    
     <div class="topnav">
         <a class="active" href="http://localhost:8080/">Home</a>
-        <a href="#about">About</a>
-        <a href="#contact">Contact</a>
-        <div class="login-container">
-          
-             <a href="./userlogin.html" >Login</a>
-           
-          
-        </div>
+        
+        <ul class="login-container">
+
+            <li class="logged-out" style="display: none;">
+                <a href="#" class="grey-text modal-trigger" data-target="modal-login" onclick="document.getElementById('modal-login').style.display='block'" style="width:auto;">Login</a>
+              </li>
+              <li class="logged-out" style="display: none;">
+                <a href="#" class="grey-text modal-trigger" data-target="modal-signup"  onclick="document.getElementById('modal-signup').style.display='block'" style="width:auto;">Sign up</a>
+              </li>
+              <li class="logged-in" style="display: none;">
+                <a href="#" class="grey-text modal-trigger" data-target="modal-account" onclick="document.getElementById('modal-account').style.display='block'" style="width:auto;">Account</a>
+              </li>
+
+              <li class="logged-in" style="display: none;">
+                <a href="#" class="grey-text " id="logout" >Logout</a>
+              </li>
+            
+             
+              <li class="logged-in" style="display: none;">
+                <a href="#" class="grey-text modal-trigger" data-target="modal-create" onclick="document.getElementById('modal-upload').style.display='block'" style="width:auto;">Upload Recipe</a>
+              </li>
+            
+             
+        </ul>
       </div>
+
+      <!--modal upload recipe-->
+      <div id="modal-upload" class="modal">
+          <div class="modal-user">
+            <span onclick="document.getElementById('modal-upload').style.display='none'" class="btnlogin backbtn" title="Close Modal">Back</span>
+            <div> Upload Recipe</div>
+
+        
+<form  id ="upload-recipe">
+    <label for="title">Title</label><br>
+    <input type="text" id="title" name="title" ><br><br>
+    <label for="ingredients">Ingredients</label><br>
+    <textarea id="ingredients" name="ingredients" rows="4" cols="50">
+    </textarea><br><br>
+    <label for="instructions">Instructions</label><br>
+    <textarea id="instructions" name="instructions" rows="4" cols="50">
+    </textarea><br><br>
+    <label for="readyInMinutes">Ready In Minutes</label><br>
+    <input type="number" id="readyInMinutes1" name="servings" min="1" max="100"><br><br>
+    <label for="servings">Servings</label><br>
+    <input type="number" id="readyInMinutes2" name="readyInMinutes" min="1" max="10"><br><br>
+    <label for="source">Add your sourceurl:</label><br>
+    <input type="url" id="source" name="source"><br><br>
+    <label for="myfile">Select an image:</label><br>
+    <input type="file" id="myfile" name="recipeimage"><br><br>
+    
+    
+    
+    <input type="submit" value="Submit" class="backbtn">
+  </form>
+          </div>
+
+      </div>
+
+
+
+
+
+      <!---end------------->
+
+
+ <!-- SIGN UP MODAL -->
+ <div id="modal-signup" class="modal">
+    <div class="modal-content containerlogin">
+        <span onclick="document.getElementById('modal-signup').style.display='none'" class="close" title="Close Modal">&times;</span>
+      <h4>Sign up</h4><br />
+      
+      <form id="signup-form">
+        <div class="input-field">
+            <input type="text" id="signup-bio" required />
+            <label for="signup-bio">User Name</label>
+          </div>
+        <div class="input-field">
+          <input type="email" id="signup-email" required />
+          <label for="signup-email">Email address</label>
+        </div>
+        <div class="input-field">
+          <input type="password" id="signup-password" required />
+          <label for="signup-password">Choose password</label>
+        </div>
+        
+        <button type="submit"  class="btn yellow darken-2 z-depth-0">Sign up</button>
+      </form>
+    </div>
+  </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <!--login-->
+
+<!-- LOGIN MODAL -->
+<div id="modal-login" class="modal">
+    <div class="modal-content containerlogin" >
+        <span onclick="document.getElementById('modal-login').style.display='none'" class="close" title="Close Modal">&times;</span>
+      <h4>Login</h4><br />
+      <form id="login-form">
+        <div class="input-field">
+          <input type="email" id="login-email" required />
+          <label for="login-email">Email address</label>
+        </div>
+        <div class="input-field">
+          <input type="password" id="login-password" required />
+          <label for="login-password">Your password</label>
+        </div>
+        <button class="btn yellow darken-2 z-depth-0">Login</button>
+      </form>
+    </div>
+  </div>
+
+
+  <!-- ACCOUNT MODAL -->
+  <div id="modal-account" class="modal">
+    
+    <div class="modal-user">
+        <span onclick="document.getElementById('modal-account').style.display='none'" class="btnlogin backbtn" title="Close Modal">Back</span>
+      <h2>Account details</h2><br />
+     
+
+      <div class="account-details "></div>
+      <div class="btnlogin "> Profile</div>
+     
+    </div>
+
+  
+  </div>
+
+
+
+
+
+
+
 
 <!--------search etxend-->
 
@@ -479,6 +619,44 @@
 
         </div>
     </div>
+
+
+<!-- The core Firebase JS SDK is always required and must be listed first -->
+<script src="https://www.gstatic.com/firebasejs/8.2.0/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.2.0/firebase-auth.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.2.0/firebase-firestore.js"></script>
+
+<!-- TODO: Add SDKs for Firebase products that you want to use
+     https://firebase.google.com/docs/web/setup#available-libraries -->
+<script src="https://www.gstatic.com/firebasejs/8.2.0/firebase-analytics.js"></script>
+
+<script>
+  // Your web app's Firebase configuration
+  // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+  var firebaseConfig = {
+    apiKey: "AIzaSyAlMyis83QUzzdWmfcZpcr8ICFGY3GOwjY",
+    authDomain: "firbase-login-auth.firebaseapp.com",
+    projectId: "firbase-login-auth",
+    storageBucket: "firbase-login-auth.appspot.com",
+    messagingSenderId: "587816836477",
+    appId: "1:587816836477:web:93fb266ce8c26991de0014",
+    measurementId: "G-YJY57BZYB3"
+  };
+  // Initialize Firebase
+  firebase.initializeApp(firebaseConfig);
+  firebase.analytics();
+
+  const auth = firebase.auth();
+  const db = firebase.firestore();
+</script>
+
+
+
+
+
+
+
+   <!-- <script src="./js/auth.js"></script>-->
 
 </body>
 

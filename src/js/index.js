@@ -19,6 +19,146 @@ import { elements, renderLoader ,clearLoader, elementStrings} from './views/base
 const state ={
 };
 
+// DOM elements
+//const guideList = document.querySelector('.guides');
+const loggedOutLinks = document.querySelectorAll('.logged-out');
+const loggedInLinks = document.querySelectorAll('.logged-in');
+const accountDetails = document.querySelector('.account-details');
+
+
+
+const setupUI = (user) => {
+  if (user) {
+    // account info
+    db.collection('users').doc(user.uid).get().then(doc => {
+      const html = `
+        <div>Logged in as ${user.email}</div>
+        <div>Username: ${doc.data().bio}</div>
+      `;
+      accountDetails.innerHTML = html;
+    });
+    // toggle user UI elements
+    loggedInLinks.forEach(item => item.style.display = 'block');
+    loggedOutLinks.forEach(item => item.style.display = 'none');
+  } else {
+    // clear account info
+    accountDetails.innerHTML = '';
+    // toggle user elements
+    loggedInLinks.forEach(item => item.style.display = 'none');
+    loggedOutLinks.forEach(item => item.style.display = 'block');
+  }
+};
+
+// listen for auth status changes
+auth.onAuthStateChanged(user => {
+  if (user) {
+    db.collection('guides').onSnapshot(snapshot => {
+      //setupGuides(snapshot.docs);
+      setupUI(user);
+      setupUIR(user);
+    }, err => console.log(err.message));
+  } else {
+    setupUI();
+   // setupGuides([]);
+  }
+});
+
+
+
+// signup
+const signupForm = document.querySelector('#signup-form');
+signupForm.addEventListener('submit', (e) => {
+  e.preventDefault();
+  
+  // get user info
+  const email = signupForm['signup-email'].value;
+  const password = signupForm['signup-password'].value;
+
+console.log(email,password);
+ // sign up the user & add firestore data
+ auth.createUserWithEmailAndPassword(email, password).then(cred => {
+  return db.collection('users').doc(cred.user.uid).set({
+    bio: signupForm['signup-bio'].value
+  });
+}).then(() => {
+  // close the signup modal & reset form
+  const modal = document.querySelector('#modal-signup');
+ modal.style.display="none";
+  signupForm.reset();
+});
+});
+
+// logout
+const logout = document.querySelector('#logout');
+logout.addEventListener('click', (e) => {
+  e.preventDefault();
+  auth.signOut();
+  console.log("logout");
+});
+
+
+// login
+const loginForm = document.querySelector('#login-form');
+loginForm.addEventListener('submit', (e) => {
+  e.preventDefault();
+  
+  // get user info
+  const email = loginForm['login-email'].value;
+  const password = loginForm['login-password'].value;
+
+  // log the user in
+  auth.signInWithEmailAndPassword(email, password).then((cred) => {
+    // close the signup modal & reset form
+
+    const modal = document.querySelector('#modal-login');
+     modal.style.display="none";
+     console.log("userloged");
+    loginForm.reset();
+    
+  });
+
+});
+
+
+//upload form
+ const setupUIR=(user)=>{
+const uploadrecipe = document.querySelector('#upload-recipe');
+uploadrecipe.addEventListener('submit', (e) => {
+  e.preventDefault();
+
+   db.collection('recipe').add({
+   Recipe:{title: uploadrecipe.title.value,
+    ingredeints: uploadrecipe.ingredients.value,
+    instructions: uploadrecipe.instructions.value,
+    servings: uploadrecipe.servings.value,
+    readyInMinutes: uploadrecipe.readyInMinutes.value,
+    source: uploadrecipe.source.value,
+    recipeimage: uploadrecipe.recipeimage.value
+   }
+  }).then(() => {
+    // close the create modal & reset form
+    const modal = document.querySelector('#modal-user');
+    console.log("recipe uploaded");
+    uploadrecipe.reset();
+  }).catch(err => {
+    console.log(err.message);
+  });
+});
+ 
+};
+
+
+
+
+
+
+
+
+
+
+
+
+
 //control recipe search
 const controlSearch = async () => {
    // 1 get query  from view
